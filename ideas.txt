@@ -1,0 +1,108 @@
+﻿- Password implementation for login
+- Autofill for email and password at login or remembering the email as it is internal software
+- Protecting the generated .CSV files so that they cannot be opened or altered.
+- Permissions levels for Master/Audrey/P2P etc
+- Cases, Filter and sort.
+
+
+WorkFlow:
+# Case Workflow Design
+
+## Overview
+This document outlines the design for handling multi‑step contact attempts, deadlines, Wellbeing Reviews (WBR), follow‑ups, and 3/6 month check‑ins. The system will use multiple CSV files to track active cases, contact attempts, archived cases, and later check‑ins.
+
+## Data Storage
+
+### 1. Active Cases (Cases.csv)
+- Contains the main details of each case:
+  - User Number (unique identifier, e.g. #RC1234)
+  - Personal details: UserNumber, FirstName, Surname, DOB, etc.
+  - Contact info: PhoneNumber, EmailAddress, Postcode, etc.
+  - High‑level fields: Status, DeadlineDate, WellbeingReviewDate, WBRSentDate, FollowUpDate
+
+### 2. Contact Attempts (ContactAttempts.csv)
+- One row per contact attempt.
+- Columns: 
+  - User Number
+  - AttemptNumber (1, 2, 3, …)
+  - ContactDate
+  - Method (Phone, Email, Text, etc.)
+  - Notes
+  - Reply (Yes/No)
+
+### 3. Archived Cases (ArchivedCases.csv)
+- When a case is complete or closed, it is moved here.
+- Same columns as Cases.csv plus ArchiveDate.
+
+### 4. 3/6 Month Check‑Ins (ThreeSixMonthChecks.csv)
+- Stores future check‑ins for cases that are complete.
+- Columns:
+  - User Number
+  - CheckType (3-Month or 6-Month)
+  - PlannedDate
+  - CompletedDate (optional)
+  - Notes
+
+## Timeline/Workflow
+
+1. **Case Creation**
+   - Status starts as "New" or "Awaiting 1st Contact"
+   - A task is created for the 1st contact, due within 5 working days.
+
+2. **First Contact Attempt**
+   - Record attempt details in ContactAttempts.csv.
+   - If user replies, status moves to "In Conversation"
+   - If no reply, status remains "Awaiting Reply."
+
+3. **Second Contact Attempt**
+   - Scheduled 5 working days after 1st contact.
+   - Record attempt details.
+   - Status updates accordingly.
+
+4. **Third Contact Attempt & Deadline**
+   - Scheduled 5 working days after 2nd attempt.
+   - If still no reply, set a DeadlineDate 5 working days later.
+   - After deadline passes, case can be marked "Closed" (and then moved to ArchivedCases.csv).
+
+5. **Wellbeing Review (WBR)**
+   - If contact is successful, schedule a WBR call.
+   - The WBR should take place, and then the WBR must be sent (within 10 working days).
+   - Status: "WBR In Progress" → "WBRSent"
+
+6. **Follow-Up**
+   - Follow-up contact is attempted 10 working days after the WBR is sent.
+   - Status: "FollowUpPending" → "FollowUpComplete"
+
+7. **3/6 Month Check‑Ins**
+   - After the WBR is sent, schedule a separate check‑in 3 or 6 months later.
+   - These are stored in ThreeSixMonthChecks.csv.
+   - Completed checks are logged and may trigger further follow‑ups if needed.
+
+8. **Case Completion**
+   - A case can only be marked complete if all necessary steps are done:
+     - Either all contact attempts have been made (and deadline passed) with no reply, or
+     - The user has gone through the WBR and follow‑up.
+   - Once complete, the case is moved from Cases.csv to ArchivedCases.csv.
+
+## Additional Considerations and Edge Cases
+
+- **User Replies Early:**  
+  - If a user responds after the 1st or 2nd attempt, skip subsequent attempts.
+- **Deadline Management:**  
+  - Compute due dates considering weekends (only working days).
+- **Task Dashboard:**  
+  - Use a separate CSV (or even a database table) for tasks, listing each case’s pending steps with due dates.
+- **Dynamic Contact Attempts:**  
+  - Use ContactAttempts.csv to allow an unlimited number of attempts.
+- **3/6 Month Checks:**  
+  - Use a separate CSV so that completed cases don’t clutter your active case list.
+
+## Implementation Summary
+
+- **Active Cases**: Cases.csv (main data)
+- **Contact Attempts**: ContactAttempts.csv (one row per attempt)
+- **Archived Cases**: ArchivedCases.csv (completed cases)
+- **Follow-Up Checks**: ThreeSixMonthChecks.csv (for later check‑ins)
+
+This document will serve as the blueprint for implementing the entire workflow.
+

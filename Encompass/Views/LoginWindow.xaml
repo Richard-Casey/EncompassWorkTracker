@@ -1,0 +1,17 @@
+﻿<Window x:Class="Encompass.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Login - Encompass" Height="300" Width="400" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <TextBlock Text="Enter your work email:" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,30,0,0"/>
+        <TextBox Name="EmailInput" Width="250" Height="30" VerticalAlignment="Center" HorizontalAlignment="Center" KeyDown="EmailInput_KeyDown"/>
+
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,30">
+            <Button Content="Login" Width="100" Height="30" Margin="10,0,10,0" Click="LoginButton_Click"/>
+            <Button Content="Register" Width="100" Height="30" Click="RegisterButton_Click"/>
+        </StackPanel>
+
+        <TextBlock Name="ErrorMessage" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,60,0,30"/>
+    </Grid>
+</Window>

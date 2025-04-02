@@ -1,0 +1,153 @@
+﻿<Window x:Class="Encompass.Views.NewCaseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="New Case - Encompass" Height="550" Width="650"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Style for Placeholder Effect in OtherContactBox -->
+        <Style x:Key="PlaceholderStyle" TargetType="TextBox">
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Text" Value="Specify Other Method..."/>
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="Gray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <!-- Form Content -->
+            <RowDefinition Height="Auto"/>
+            <!-- Progress Bar -->
+            <RowDefinition Height="Auto"/>
+            <!-- Navigation Buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- Step 1: Basic Info -->
+        <StackPanel Name="Step1Panel" Visibility="Visible" Margin="10">
+            <TextBlock Text="User Number (Required):" FontWeight="Bold"/>
+            <TextBox Name="UserNumberBox" Background="White" TextChanged="ValidateStep1"/>
+
+            <TextBlock Text="First Name (Required):" FontWeight="Bold"/>
+            <TextBox Name="FirstNameBox" TextChanged="ValidateStep1"/>
+
+            <TextBlock Text="Surname (Optional):" FontWeight="Bold"/>
+            <TextBox Name="SurnameBox"/>
+
+            <TextBlock Text="Submission Date (Required):" FontWeight="Bold"/>
+            <DatePicker Name="SubmissionDatePicker"/>
+
+            <TextBlock Text="Submission Time (24-hour format) (Required):" FontWeight="Bold"/>
+            <TextBox Name="SubmissionTimeBox"/>
+
+            <TextBlock Text="Phone Number (If supplied):" FontWeight="Bold"/>
+            <TextBox Name="PhoneBox" TextChanged="ValidateStep1"/>
+
+            <TextBlock Text="Email Address (If supplied):" FontWeight="Bold"/>
+            <TextBox Name="EmailBox" TextChanged="ValidateStep1"/>
+
+            <TextBlock Text="Postcode (Required):" FontWeight="Bold"/>
+            <TextBox Name="PostcodeBox" TextChanged="FetchPostcodeDetails"/>
+
+            <TextBlock Text="Town:" FontWeight="Bold"/>
+            <TextBox Name="TownBox" IsReadOnly="True" Background="LightGray"/>
+
+            <TextBlock Text="Local Authority:" FontWeight="Bold"/>
+            <TextBox Name="LocalAuthorityBox" IsReadOnly="True" Background="LightGray"/>
+
+            <TextBlock Text="Location:" FontWeight="Bold"/>
+            <TextBox Name="LocationBox" IsReadOnly="True" Background="LightGray"/>
+        </StackPanel>
+
+        <!-- Step 2: Demographics -->
+        <StackPanel Name="Step2Panel" Visibility="Collapsed" Margin="10">
+            <TextBlock Text="Date of Birth (Required):" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal">
+                <DatePicker Name="DOBPicker" SelectedDateChanged="CalculateAge"/>
+                <TextBlock Text=" Age:" FontWeight="Bold" Margin="10,0,5,0"/>
+                <TextBox Name="AgeBox" IsReadOnly="True" Background="LightGray" Width="50"/>
+            </StackPanel>
+
+            <TextBlock Text="Gender (Required):" FontWeight="Bold"/>
+            <ComboBox Name="GenderDropdown">
+                <ComboBoxItem Content="Please Select..." IsSelected="True" IsEnabled="False"/>
+                <ComboBoxItem Content="Male"/>
+                <ComboBoxItem Content="Female"/>
+                <ComboBoxItem Content="Non-Binary"/>
+                <ComboBoxItem Content="Other"/>
+                <ComboBoxItem Content="Prefer not to say"/>
+            </ComboBox>
+
+            <TextBlock Text="Ethnicity (Required):" FontWeight="Bold"/>
+            <ComboBox Name="EthnicityDropdown">
+                <ComboBoxItem Content="Please Select..." IsSelected="True" IsEnabled="False"/>
+                <ComboBoxItem Content="White"/>
+                <ComboBoxItem Content="Black or African"/>
+                <ComboBoxItem Content="Asian"/>
+                <ComboBoxItem Content="Mixed"/>
+                <ComboBoxItem Content="Other"/>
+                <ComboBoxItem Content="Prefer not to say"/>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- Step 3: Contact Preferences -->
+        <StackPanel Name="Step3Panel" Visibility="Collapsed" Margin="10">
+            <TextBlock Text="Preferred Method of Contact (Required):" FontWeight="Bold"/>
+            <CheckBox Name="PhoneCallCheck" Content="Phone Call" Checked="ValidateContactMethods"/>
+            <CheckBox Name="TeamsCheck" Content="Microsoft Teams" Checked="ValidateContactMethods"/>
+            <CheckBox Name="ZoomCheck" Content="Zoom" Checked="ValidateContactMethods"/>
+            <CheckBox Name="OtherCheck" Content="Other" Checked="ToggleOtherContactMethod"/>
+
+            <!-- Apply PlaceholderStyle from Window.Resources -->
+            <TextBox Name="OtherContactBox" IsEnabled="False" Style="{StaticResource PlaceholderStyle}"/>
+
+            <TextBlock Text="Gestation Period (Required):" FontWeight="Bold"/>
+            <ComboBox Name="GestationDropdown">
+                <ComboBoxItem Content="Please Select..." IsSelected="True" IsEnabled="False"/>
+                <ComboBoxItem Content="Prenatal (Before birth)"/>
+                <ComboBoxItem Content="Postnatal (Up to 6 weeks)"/>
+                <ComboBoxItem Content="Postpartum (Beyond 6 weeks)"/>
+                <ComboBoxItem Content="Prefer not to say"/>
+            </ComboBox>
+
+            <TextBlock Text="How was the service accessed? (Required):" FontWeight="Bold"/>
+            <ComboBox Name="ServiceAccessDropdown">
+                <ComboBoxItem Content="Please Select..." IsSelected="True" IsEnabled="False"/>
+                <ComboBoxItem Content="GP"/>
+                <ComboBoxItem Content="Midwife"/>
+                <ComboBoxItem Content="QR Code"/>
+                <ComboBoxItem Content="Other"/>
+            </ComboBox>
+
+            <TextBlock Text="Living with Partner? (Required):" FontWeight="Bold"/>
+            <ComboBox Name="LivingWithPartnerDropdown">
+                <ComboBoxItem Content="Please Select..." IsSelected="True" IsEnabled="False"/>
+                <ComboBoxItem Content="Yes"/>
+                <ComboBoxItem Content="No"/>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10">
+            <TextBlock Name="Step1Indicator" Text="●" FontSize="24" Foreground="Gray"/>
+            <TextBlock Text=" → " FontSize="24"/>
+            <TextBlock Name="Step2Indicator" Text="●" FontSize="24" Foreground="Gray"/>
+            <TextBlock Text=" → " FontSize="24"/>
+            <TextBlock Name="Step3Indicator" Text="●" FontSize="24" Foreground="Gray"/>
+        </StackPanel>
+
+
+        <!-- Navigation Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <Button Name="BackButton" Content="Back" Width="100" Click="Back_Click" IsEnabled="False"/>
+            <Button Name="NextButton" Content="Next" Width="100" Margin="10,0,10,0" Click="Next_Click" IsEnabled="False"/>
+            <Button Name="SubmitButton" Content="Submit" Width="100" Click="Submit_Click" Visibility="Collapsed"/>
+        </StackPanel>
+    </Grid>
+</Window>

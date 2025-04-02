@@ -1,0 +1,20 @@
+# Ignore Visual Studio folders
+.vs/
+*.user
+*.suo
+
+# Ignore build results
+bin/
+obj/
+
+# Ignore NuGet packages
+*.nupkg
+packages/
+
+# Ignore temporary files
+*.log
+*.tmp
+
+# Others
+*.DS_Store
+*.swp

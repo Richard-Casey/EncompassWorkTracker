@@ -1,0 +1,285 @@
+﻿<Window x:Class="Encompass.Views.CasesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cases - Encompass" Height="600" Width="900"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <!-- Define 4 rows: Search Bar, Button Row, TabControl for DataGrids, Case Count Summary -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- SEARCH BAR (Row 0) -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center" Margin="10">
+            <TextBox Name="SearchBox" Width="250" Height="25"
+                     Text="Search cases..." Foreground="Gray"
+                     GotFocus="SearchBox_GotFocus" LostFocus="SearchBox_LostFocus"/>
+            <Button Content="Search" Width="100" Margin="10,0,0,0" Click="Search_Click"/>
+        </StackPanel>
+
+        <!-- BUTTON ROW (Row 1) -->
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Left" Margin="10">
+            <Button Name="NewCaseButton" Content="New Case" Width="100" Click="NewCase_Click"/>
+            <Button Name="EditCaseButton" Content="Edit Case" Width="100" Visibility="Collapsed" Margin="10,0,0,0"
+                    Click="EditCase_Click"/>
+            <Button Name="DeleteCaseButton" Content="Delete Case" Width="100" Visibility="Collapsed" Margin="10,0,0,0"
+                    Click="DeleteCase_Click"/>
+            <Button Name="ArchiveCaseButton" 
+                    Content="Archive Case" 
+                    Width="100" 
+                    Margin="10,0,0,0"
+                    Click="ArchiveCase_Click"/>
+        </StackPanel>
+
+        <!-- TABCONTROL FOR DATA GRIDS (Row 2) -->
+        <TabControl Grid.Row="2" Margin="10" x:Name="DataTabControl">
+            <!-- Active Cases Tab -->
+            <TabItem Header="Active Cases">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left DataGrid: User Number -->
+                    <DataGrid x:Name="LeftDataGrid"
+                              Grid.Column="0"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="All"
+                              HorizontalGridLinesBrush="LightGray"
+                              VerticalGridLinesBrush="LightGray"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              AlternationCount="2"
+                              AlternatingRowBackground="LightBlue"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              PreviewMouseLeftButtonDown="LeftDataGrid_PreviewMouseLeftButtonDown"
+                              ColumnWidth="SizeToHeader"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="User Number"
+                                                Binding="{Binding UserNumber}"
+                                                IsReadOnly="True"
+                                                Width="Auto"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Main DataGrid: All columns except User Number & Status -->
+                    <DataGrid x:Name="MainDataGrid"
+                              Grid.Column="1"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="All"
+                              HorizontalGridLinesBrush="LightGray"
+                              VerticalGridLinesBrush="LightGray"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              AlternationCount="2"
+                              AlternatingRowBackground="LightBlue"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              PreviewMouseLeftButtonDown="MainDataGrid_PreviewMouseLeftButtonDown"
+                              MouseDoubleClick="MainDataGrid_MouseDoubleClick"
+                              ColumnWidth="SizeToCells"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="Auto"/>
+                            <DataGridTextColumn Header="Submission Date" Binding="{Binding SubmissionDate}" Width="Auto"/>
+                            <DataGridTextColumn Header="Submission Time" Binding="{Binding SubmissionTime}" Width="Auto"/>
+                            <DataGridTextColumn Header="Phone" Binding="{Binding PhoneNumber}" Width="Auto"/>
+                            <DataGridTextColumn Header="Email" Binding="{Binding EmailAddress}" Width="Auto"/>
+                            <DataGridTextColumn Header="Date of Birth" Binding="{Binding DOB}" Width="Auto"/>
+                            <DataGridTextColumn Header="Age" Binding="{Binding Age}" Width="Auto"/>
+                            <DataGridTextColumn Header="Postcode" Binding="{Binding Postcode}" Width="Auto"/>
+                            <DataGridTextColumn Header="Town" Binding="{Binding CurrentTown}" Width="Auto"/>
+                            <DataGridTextColumn Header="Local Authority" Binding="{Binding LocalAuthority}" Width="Auto"/>
+                            <DataGridTextColumn Header="Location" Binding="{Binding Location}" Width="Auto"/>
+                            <DataGridTextColumn Header="Gender" Binding="{Binding Gender}" Width="Auto"/>
+                            <DataGridTextColumn Header="Ethnicity" Binding="{Binding Ethnicity}" Width="Auto"/>
+                            <DataGridTextColumn Header="Contact Method" Binding="{Binding PreferredContact}" Width="Auto"/>
+                            <DataGridTextColumn Header="Gestation" Binding="{Binding GestationPeriod}" Width="Auto"/>
+                            <DataGridTextColumn Header="Service Access" Binding="{Binding ServiceAccess}" Width="Auto"/>
+                            <DataGridTextColumn Header="Living with Partner" Binding="{Binding LivingWithPartner}" Width="Auto"/>
+                            <DataGridTextColumn Header="Local EPUT Hub" Binding="{Binding LocalHub}" Width="Auto"/>
+                            <DataGridTextColumn Header="Deadline Date" Binding="{Binding DeadlineDate}" Width="Auto"/>
+                            <DataGridTextColumn Header="WBR Date" Binding="{Binding WellbeingReviewDate}" Width="Auto"/>
+                            <DataGridTextColumn Header="WBR Sent" Binding="{Binding WBRSentDate}" Width="Auto"/>
+                            <DataGridTextColumn Header="Follow Up Date" Binding="{Binding FollowUpDate}" Width="Auto"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Right DataGrid: Status -->
+                    <DataGrid x:Name="StatusDataGrid"
+                              Grid.Column="2"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="All"
+                              HorizontalGridLinesBrush="LightGray"
+                              VerticalGridLinesBrush="LightGray"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              AlternationCount="2"
+                              AlternatingRowBackground="LightBlue"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              PreviewMouseLeftButtonDown="StatusDataGrid_PreviewMouseLeftButtonDown"
+                              ColumnWidth="SizeToHeader"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              Margin="0,0,10,0">
+                        <DataGrid.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black"/>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" IsReadOnly="True" Width="Auto">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Background" Value="{Binding StatusBrush}" />
+                                        <Setter Property="Foreground" Value="{Binding ForegroundBrush}" />
+                                        <Setter Property="FontWeight" Value="{Binding FontWeight}" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- Archived Cases Tab -->
+            <TabItem Header="Archived Cases">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- You can define these DataGrids similar to the active ones, 
+                         but binding to a separate collection (e.g. ArchivedCases) -->
+                    <DataGrid x:Name="ArchivedLeftDataGrid"
+                              Grid.Column="0"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="All"
+                              HorizontalGridLinesBrush="LightGray"
+                              VerticalGridLinesBrush="LightGray"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              AlternationCount="2"
+                              AlternatingRowBackground="LightBlue"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              ColumnWidth="SizeToHeader"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="User Number"
+                                                Binding="{Binding UserNumber}"
+                                                IsReadOnly="True"
+                                                Width="Auto"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid x:Name="ArchivedMainDataGrid"
+                              Grid.Column="1"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="All"
+                              HorizontalGridLinesBrush="LightGray"
+                              VerticalGridLinesBrush="LightGray"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              AlternationCount="2"
+                              AlternatingRowBackground="LightBlue"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              ColumnWidth="SizeToCells"
+                              MouseDoubleClick="ArchivedMainDataGrid_MouseDoubleClick"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="Auto"/>
+                            <DataGridTextColumn Header="Submission Date" Binding="{Binding SubmissionDate}" Width="Auto"/>
+                            <DataGridTextColumn Header="Submission Time" Binding="{Binding SubmissionTime}" Width="Auto"/>
+                            <DataGridTextColumn Header="Phone" Binding="{Binding PhoneNumber}" Width="Auto"/>
+                            <DataGridTextColumn Header="Email" Binding="{Binding EmailAddress}" Width="Auto"/>
+                            <DataGridTextColumn Header="DOB" Binding="{Binding DOB}" Width="Auto"/>
+                            <DataGridTextColumn Header="Age" Binding="{Binding Age}" Width="Auto"/>
+                            <DataGridTextColumn Header="Postcode" Binding="{Binding Postcode}" Width="Auto"/>
+                            <DataGridTextColumn Header="Town" Binding="{Binding CurrentTown}" Width="Auto"/>
+                            <DataGridTextColumn Header="Local Authority" Binding="{Binding LocalAuthority}" Width="Auto"/>
+                            <DataGridTextColumn Header="Location" Binding="{Binding Location}" Width="Auto"/>
+                            <DataGridTextColumn Header="Gender" Binding="{Binding Gender}" Width="Auto"/>
+                            <DataGridTextColumn Header="Ethnicity" Binding="{Binding Ethnicity}" Width="Auto"/>
+                            <DataGridTextColumn Header="Contact Method" Binding="{Binding PreferredContact}" Width="Auto"/>
+                            <DataGridTextColumn Header="Gestation" Binding="{Binding GestationPeriod}" Width="Auto"/>
+                            <DataGridTextColumn Header="Service Access" Binding="{Binding ServiceAccess}" Width="Auto"/>
+                            <DataGridTextColumn Header="Living with Partner" Binding="{Binding LivingWithPartner}" Width="Auto"/>
+                            <DataGridTextColumn Header="Local EPUT Hub" Binding="{Binding LocalHub}" Width="Auto"/>
+                            <DataGridTextColumn Header="Deadline Date" Binding="{Binding DeadlineDate}" Width="Auto"/>
+                            <DataGridTextColumn Header="WBR Date" Binding="{Binding WellbeingReviewDate}" Width="Auto"/>
+                            <DataGridTextColumn Header="WBR Sent" Binding="{Binding WBRSentDate}" Width="Auto"/>
+                            <DataGridTextColumn Header="Follow Up Date" Binding="{Binding FollowUpDate}" Width="Auto"/>
+                            <!-- You can add extra columns for archived cases, e.g. ArchiveDate or Closure Reason -->
+                            <DataGridTextColumn Header="Archive Date" Binding="{Binding ArchiveDate}" Width="Auto"/>
+                            <DataGridTextColumn Header="Archive Reason" Binding="{Binding ArchiveReason}" Width="Auto"/>
+
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid x:Name="ArchivedStatusDataGrid"
+                              Grid.Column="2"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="All"
+                              HorizontalGridLinesBrush="LightGray"
+                              VerticalGridLinesBrush="LightGray"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              AlternationCount="2"
+                              AlternatingRowBackground="LightBlue"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              ColumnWidth="SizeToHeader"
+                              MouseDoubleClick="ArchivedMainDataGrid_MouseDoubleClick"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              Margin="0,0,10,0">
+                        <DataGrid.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black"/>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" IsReadOnly="True" Width="Auto">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Background" Value="{Binding StatusBrush}" />
+                                        <Setter Property="Foreground" Value="{Binding ForegroundBrush}" />
+                                        <Setter Property="FontWeight" Value="{Binding FontWeight}" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!-- CASE COUNT SUMMARY (Row 3) -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,0,10,10">
+            <TextBlock Name="CaseCountLabel"
+                       Text="Showing 0 cases. Total cases: 0"
+                       HorizontalAlignment="Right"
+                       Margin="0,0,10,10"/>
+        </StackPanel>
+    </Grid>
+</Window>
